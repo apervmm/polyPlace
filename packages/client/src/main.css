@@ -1,0 +1,101 @@
+.canvas {
+    display: grid;
+    grid-template-columns: repeat(100, 10px);
+    grid-template-rows: repeat(100, 10px);
+    gap: 1px;
+}
+  
+.pixel {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ccc; 
+    cursor: pointer;
+}
+
+.sidebar {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.coordinates {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.palette {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 50px;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+}
+
+
+.polyplace-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 5px 5px;
+}
+
+.auth-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.auth-button:hover {
+    background-color: #0056b3;
+}
+
+.canvas-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvas {
+    display: grid;
+    grid-template-columns: repeat(100, 10px);
+    grid-template-rows: repeat(100, 10px);
+    gap: 1px;
+}
+
+.pixel {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.sidebar {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-left: 2px solid #ccc;
+}
+
