@@ -1,39 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import "dotenv/config";
+// import "./main.css";
 
-const SIDE = 100;
+
+const WIDTH = 160;
+const HEIGHT = 100;
 const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
-const ws = new WebSocket("ws://localhost:8765");
+
+const Token = process.env.TOKEN;
+
 
 function PolyPlace() {
-  const [grid, setGrid] = useState(Array(SIDE * SIDE).fill("white"));
+  const [grid, setGrid] = useState(Array(WIDTH * HEIGHT).fill("white"));
   const [selectedColor, setSelectedColor] = useState("black");
   const [coordinates, setCoordinates] = useState("(0,0)");
+  const wsRef = useRef(null);
 
   useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8765?token=${Token}`);
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
 
-      if (message.type === "grid") {
-        setGrid(message.data);
+      if (message.type === "init") {
+        const newGrid = Array(WIDTH * HEIGHT).fill("white");
+
+        message.pixels.forEach((pix) => {
+          newGrid[pix.coordinate] = pix.color;
+        });
+        setGrid(newGrid);
       } else if (message.type === "update") {
         setGrid((prevGrid) => {
           const newGrid = [...prevGrid];
-          newGrid[message.index] = message.color;
+          newGrid[message.coordinate] = message.color;
           return newGrid;
         });
       }
     };
 
-    return () => ws.close();
+    wsRef.current = ws;
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
-  const handleClick = (index) => {
-    ws.send(JSON.stringify({ type: "place", index, color: selectedColor }));
+  const handleClick = (coordinate) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: "place",
+        coordinate,
+        color: selectedColor
+      }));
+    }
   };
 
-  const handleMouse = (index) => {
-    const x = index % SIDE;
-    const y = Math.floor(index / SIDE);
+  const handleMouse = (coordinate) => {
+    const x = coordinate % WIDTH;
+    const y = Math.floor(coordinate / WIDTH);
     setCoordinates(`(${x},${y})`);
   };
 
@@ -45,14 +68,20 @@ function PolyPlace() {
 
       <div className="main-content">
         <div className="canvas-container">
-          <div className="canvas">
-            {grid.map((color, index) => (
+          <div
+            className="canvas"
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${WIDTH}, 1fr)`,
+              gridTemplateRows: `repeat(${HEIGHT}, 1fr)`
+            }}>
+            {grid.map((color, coordinate) => (
               <div
-                key={index}
+                key={coordinate}
                 className="pixel"
                 style={{ backgroundColor: color }}
-                onClick={() => handleClick(index)}
-                onMouseMove={() => handleMouse(index)}
+                onClick={() => handleClick(coordinate)}
+                onMouseMove={() => handleMouse(coordinate)}
               />
             ))}
           </div>

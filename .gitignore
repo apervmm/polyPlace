@@ -2,3 +2,4 @@
 /server/.venv
 .venv
 .env
+/packages/server_2
