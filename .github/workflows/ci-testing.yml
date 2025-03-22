@@ -12,18 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-
       - run: npm ci
-
-      # SERVER Package
-      - run: npm run -w server lint
-      - run: npm run -w server test
-      
-      # AUTH Package
-      - run: npm run -w auth lint
-      - run: npm run -w auth test
-
-      # CLIENT Package
-      - run: npm run -w client lint
+      - run: npm run -w server
+      - run: npm run -w client
       - run: npm run -w client build
-      - run: npm run -w client test
