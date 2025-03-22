@@ -6,7 +6,7 @@
     "lint": "npx eslint . && npx prettier --check .",
     "dev": "nodemon auth.js",
     "start:auth": "node auth.js",
-    "start:server": "node server.js",
+    "start:server": "node server.js"
   },
   "author": "",
   "license": "ISC",
