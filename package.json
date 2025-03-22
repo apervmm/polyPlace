@@ -2,12 +2,13 @@
   "name": "pplace",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {     
+  "scripts": {
     "lint": "npx eslint . && npx prettier --check .",
     "dev": "nodemon auth.js",
-    "start:auth": "node auth.js"
+    "start:auth": "node auth.js",
+    "start:server": "node server.js",
   },
-    "author": "",
+  "author": "",
   "license": "ISC",
   "workspaces": [
     "packages/*"
