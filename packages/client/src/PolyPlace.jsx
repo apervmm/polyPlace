@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "dotenv/config";
+// import "dotenv/config";
 // import "./main.css";
 
 
@@ -7,7 +7,7 @@ const WIDTH = 160;
 const HEIGHT = 100;
 const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
 
-const Token = process.env.TOKEN;
+const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NWQxY2UxOS1lYzg0LTQ2YmUtOGQ1Zi04YzY4ODU5ZjgzZmYiLCJpYXQiOjE3NDI2Mjk1NDAsImV4cCI6MTc0MjcxNTk0MH0.LQejAdRQbyhD98JBJ9W3bNn_1FXIiLFt4ISIg-XWYYw";
 
 
 function PolyPlace() {

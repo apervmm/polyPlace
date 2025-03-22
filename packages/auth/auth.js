@@ -13,7 +13,7 @@ app.post('/register', async (req, res) => {
     try {
         const { username, password, email } = req.body;
 
-
+        console.log('userbody:', username);
         if (!username || !password || !email) {
             return res.status(400).json({ success: false, error: 'Missing fields' });
         }

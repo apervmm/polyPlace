@@ -22,13 +22,14 @@ async function testConnection() {
 
 
 
-async function getFinalPixelState() {
-  const rows = await sql`
-    SELECT DISTINCT ON (coordinate)
-        coordinate, color, timestamp, userid
-    FROM actions
-    ORDER BY coordinate, timestamp DESC`;
-  return rows;
+async function getState() {
+    const rows = await sql`
+        SELECT DISTINCT ON (coordinate)
+            coordinate, color, timestamp, userid
+        FROM actions
+        ORDER BY coordinate, timestamp DESC`;
+    // console.log(rows);
+    return rows;
 }
 
 
@@ -54,19 +55,19 @@ function broadcast(wsServer, payload) {
 
 
 async function handlePlace(wsServer, data, userId) {
-  const { coordinate, color } = data;
+    const { coordinate, color } = data;
 
-  const event = {
-    type: "update",
-    coordinate,
-    color,
-    userId,
-    timestamp: new Date().toISOString()
-  };
+    const event = {
+        type: "update",
+        coordinate,
+        color,
+        userId,
+        timestamp: new Date().toISOString()
+    };
 
 
-  await insertAction(coordinate, color, userId);
-  broadcast(wsServer, event);
+    await insertAction(coordinate, color, userId);
+    broadcast(wsServer, event);
 }
 
 
@@ -83,6 +84,7 @@ wsServer.on("connection", async (connection, request) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         userId = decoded.userId; 
+        // console.log("Decoded JWT:", decoded);
     } catch (err) {
         console.error("JWT verification failed:", err);
         connection.send(JSON.stringify({ error: "Invalid token" }));
@@ -92,10 +94,10 @@ wsServer.on("connection", async (connection, request) => {
 
     console.log(`New client userId=${userId}`);
 
-    const finalPixels = await getFinalPixelState();
+    const pixelState = await getState();
     connection.send(JSON.stringify({
         type: "init",
-        pixels: finalPixels,
+        pixels: pixelState,
         userId
     }));
 
@@ -127,11 +129,3 @@ async function startServer() {
 }
 
 startServer();
-
-
-// (async function startServer() {
-//     await testConnection();
-//     server.listen(port, () => {
-//         console.log(`WS Listening on port ${port}`);
-//     });
-// })();
