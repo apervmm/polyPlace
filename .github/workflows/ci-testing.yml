@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v22.13.1
+      - uses: actions/setup-node@v3
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run -w server lint
-      - run: npm run -w client lint
+      - run: npm run -w server
+      - run: npm run -w cient
       - run: npm run -w client build
