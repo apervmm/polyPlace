@@ -77,7 +77,7 @@ app.post('/login', async (req, res) => {
 
 
 
-const authPort = process.env.AUTH_PORT || process.env.PORT || 3000;
+const authPort = process.env.PORT || 3000;
 app.listen(authPort, () => {
     console.log(`Auth-server running on http://localhost:${authPort}/`);
 });
