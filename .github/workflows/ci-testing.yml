@@ -14,5 +14,5 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run -w server
-      - run: npm run -w cient
+      - run: npm run -w client
       - run: npm run -w client build
