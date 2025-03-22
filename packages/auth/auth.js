@@ -9,6 +9,10 @@ const app = express();
 app.use(express.json());
 
 
+app.get('/', (req, res) => {
+    res.status(200).send('Auth-server is running.');
+});
+
 app.post('/register', async (req, res) => {
     try {
         const { username, password, email } = req.body;
@@ -77,7 +81,7 @@ app.post('/login', async (req, res) => {
 
 
 
-const authPort = process.env.PORT || 3000;
+const authPort = process.env.AUTH_PORT || process.env.PORT || 3000;
 app.listen(authPort, () => {
     console.log(`Auth-server running on http://localhost:${authPort}/`);
 });
