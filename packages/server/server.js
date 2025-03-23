@@ -8,7 +8,7 @@ import 'dotenv/config';
 
 const server = http.createServer();
 const wsServer = new WebSocketServer({ server });
-const port = process.env.PORT || 8765;
+const port = process.env.PORT || 8080;
 
 
 async function testConnection() {
