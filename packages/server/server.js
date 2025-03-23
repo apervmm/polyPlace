@@ -134,10 +134,10 @@ wsServer.on("connection", async (connection, request) => {
 
 
 async function startServer() {
-    await testConnection();
     server.listen(port, '0.0.0.0', () => {
         console.log(`Server running on ${port}`);
     });
+    await testConnection();
 }
 
 startServer();
