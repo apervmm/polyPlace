@@ -6,4 +6,4 @@ import "./main.css";
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
-root.render(<PolyPlace />);
+root.render(<App />);

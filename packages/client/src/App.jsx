@@ -5,8 +5,6 @@ import PolyPlace from "./PolyPlace";
 function App() {
   const [token, setToken] = useState(() => localStorage.getItem("token") || null);
 
-
-
   return (
     <div>
       {!token ? (

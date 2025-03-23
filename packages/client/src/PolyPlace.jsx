@@ -7,17 +7,14 @@ const WIDTH = 160;
 const HEIGHT = 100;
 const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
 
-const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NWQxY2UxOS1lYzg0LTQ2YmUtOGQ1Zi04YzY4ODU5ZjgzZmYiLCJpYXQiOjE3NDI2Mjk1NDAsImV4cCI6MTc0MjcxNTk0MH0.LQejAdRQbyhD98JBJ9W3bNn_1FXIiLFt4ISIg-XWYYw";
-
-
-function PolyPlace() {
+function PolyPlace({ token }) {
   const [grid, setGrid] = useState(Array(WIDTH * HEIGHT).fill("white"));
   const [selectedColor, setSelectedColor] = useState("black");
   const [coordinates, setCoordinates] = useState("(0,0)");
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8765?token=${Token}`);
+    const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/token=${token}`);
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
 
