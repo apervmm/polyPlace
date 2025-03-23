@@ -19,14 +19,12 @@ function Auth({ setToken }) {
       });
       const data = await res.json();
       if (data.success) {
-        alert("User registered! Now you can login.");
         setIsRegister(false);
       } else {
         alert(data.error || "Registration failed");
       }
     } catch (err) {
       console.error("Register error:", err);
-      alert("Something went wrong during registration");
     }
   }
 
@@ -48,7 +46,6 @@ function Auth({ setToken }) {
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Something went wrong during login");
     }
   }
 
