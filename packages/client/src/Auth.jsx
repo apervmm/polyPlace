@@ -38,7 +38,6 @@ function Auth({ setToken }) {
       });
       const data = await res.json();
       if (data.success) {
-        // Save token in localStorage
         localStorage.setItem("token", data.token);
         setToken(data.token);
       } else {
