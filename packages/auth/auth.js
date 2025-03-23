@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import sql from './db.js'; 
 import 'dotenv/config';
+import cors from "cors";
 
 const app = express();
 app.use(cors());
