@@ -4,9 +4,15 @@ import url from 'url';
 import jwt from 'jsonwebtoken';
 import sql from './db.js';
 import 'dotenv/config';
+import express from 'express';
 
+const app = express();
 
-const server = http.createServer();
+app.get('/', (req, res) => {
+    res.status(200).send('OK');
+  });
+
+const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
 const port = process.env.PORT || 8080;
 
