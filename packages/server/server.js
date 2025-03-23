@@ -124,7 +124,7 @@ wsServer.on("connection", async (connection, request) => {
 async function startServer() {
     await testConnection();
     server.listen(port, () => {
-        console.log(`Server running on  ws://localhost:${port}`);
+        console.log(`Server running on ${port}`);
     });
 }
 
