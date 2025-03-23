@@ -14,7 +14,7 @@ function PolyPlace({ token }) {
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/token=${token}`);
+    const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
 
@@ -39,7 +39,7 @@ function PolyPlace({ token }) {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [token]);
 
   const handleClick = (coordinate) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
