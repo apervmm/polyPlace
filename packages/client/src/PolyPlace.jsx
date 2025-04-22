@@ -22,12 +22,12 @@ function PolyPlace({ token }) {
       const message = JSON.parse(event.data);
 
 
-      if (msg.error) {
-        console.error("WS error:", msg.error);
-        ws.close();
-        logout();
-        return;
-      }
+      // if (msg.error) {
+      //   console.error("WS error:", msg.error);
+      //   ws.close();
+      //   logout();
+      //   return;
+      // }
 
       if (message.type === "init") {
         const newGrid = Array(WIDTH * HEIGHT).fill("white");
