@@ -46,11 +46,11 @@ function PolyPlace({ token }) {
     };
 
 
-    ws.onclose = () => {
-      if (!initReceived) {
-        logout();
-      }
-    };
+    // ws.onclose = () => {
+    //   if (!initReceived) {
+    //     logout();
+    //   }
+    // };
 
 
     
