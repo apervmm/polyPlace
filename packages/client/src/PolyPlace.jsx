@@ -7,7 +7,7 @@ const WIDTH = 160;
 const HEIGHT = 100;
 const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
 
-function PolyPlace({ token }) {
+function PolyPlace({ token, logout }) {
   const [grid, setGrid] = useState(Array(WIDTH * HEIGHT).fill("white"));
   const [selectedColor, setSelectedColor] = useState("black");
   const [coordinates, setCoordinates] = useState("(0,0)");
@@ -22,12 +22,12 @@ function PolyPlace({ token }) {
       const message = JSON.parse(event.data);
 
 
-      // if (msg.error) {
-      //   console.error("WS error:", msg.error);
-      //   ws.close();
-      //   logout();
-      //   return;
-      // }
+      if (message.error) {
+        console.error("WS error:", message.error);
+        ws.close();
+        logout();
+        return;
+      }
 
       if (message.type === "init") {
         const newGrid = Array(WIDTH * HEIGHT).fill("white");
@@ -46,20 +46,13 @@ function PolyPlace({ token }) {
     };
 
 
-    // ws.onclose = () => {
-    //   if (!initReceived) {
-    //     logout();
-    //   }
-    // };
-
-
     
     wsRef.current = ws;
 
     return () => {
       ws.close();
     };
-  }, [token]);
+  }, [token, logout]);
 
   const handleClick = (coordinate) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
