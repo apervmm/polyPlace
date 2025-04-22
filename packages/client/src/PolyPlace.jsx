@@ -15,7 +15,6 @@ function PolyPlace({ token }) {
 
   useEffect(() => {
     const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
-    // const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjOGRlZTU1Ny0yMzg4LTQ3YjctOTk5ZC1iODY3ODdiYzMzNGIiLCJpYXQiOjE3NDUzNDUzMzksImV4cCI6MTc0NTQzMTczOX0.Ir99--W-ZlD1koA4O93dEGf1bwiV1hnOqo88ENf-kP4`);
     
     
     
