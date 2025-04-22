@@ -15,8 +15,20 @@ function PolyPlace({ token }) {
 
   useEffect(() => {
     const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
+    // const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjOGRlZTU1Ny0yMzg4LTQ3YjctOTk5ZC1iODY3ODdiYzMzNGIiLCJpYXQiOjE3NDUzNDUzMzksImV4cCI6MTc0NTQzMTczOX0.Ir99--W-ZlD1koA4O93dEGf1bwiV1hnOqo88ENf-kP4`);
+    
+    
+    
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
+
+
+      if (msg.error) {
+        console.error("WS error:", msg.error);
+        ws.close();
+        logout();
+        return;
+      }
 
       if (message.type === "init") {
         const newGrid = Array(WIDTH * HEIGHT).fill("white");
@@ -34,6 +46,15 @@ function PolyPlace({ token }) {
       }
     };
 
+
+    ws.onclose = () => {
+      if (!initReceived) {
+        logout();
+      }
+    };
+
+
+    
     wsRef.current = ws;
 
     return () => {

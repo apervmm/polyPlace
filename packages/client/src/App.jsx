@@ -3,14 +3,20 @@ import Auth from "./Auth";
 import PolyPlace from "./PolyPlace";
 
 function App() {
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
 
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setToken(null);
+  }
+
+  
   return (
     <div>
       {!token ? (
         <Auth setToken={setToken} />
       ) : (
-        <PolyPlace token={token} />
+        <PolyPlace token={token} logout={handleLogout}/>
       )}
     </div>
   );
