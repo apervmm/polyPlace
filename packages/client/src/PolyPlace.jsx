@@ -5,8 +5,8 @@ import React, {
   useCallback
 } from "react";
 
-const WIDTH = 160;
-const HEIGHT = 100;
+const WIDTH = 1000;
+const HEIGHT = 1000;
 const COLORS = [
   "red", "blue", "green", "yellow",
   "black","white","purple","orange"
