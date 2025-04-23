@@ -5,8 +5,8 @@ import React, {
   useCallback
 } from "react";
 
-const WIDTH = 1000;
-const HEIGHT = 1000;
+const WIDTH =200;
+const HEIGHT = 200;
 
 const COLORS = [
   "red", "blue", "green", "yellow",
@@ -29,7 +29,7 @@ export default function PolyPlace({ token, logout }) {
   const wsRef     = useRef(null);
   const [coords, setCoords]     = useState("(0,0)");
   const [selected, setSelected] = useState("black");
-  const imageDataRef            = useRef(null);
+  const imageDataRef = useRef(null);
   
 
 
@@ -92,12 +92,13 @@ export default function PolyPlace({ token, logout }) {
           img.data[idx + 0] = r;
           img.data[idx + 1] = g;
           img.data[idx + 2] = b;
-          img.data[idx + 3] = 0;
+          img.data[idx + 3] = 255;
         });
         draw(); 
       }
       
-      // single-pixel update
+
+      // update
       else if (msg.type === "update") {
         const { coordinate, color } = msg;
         const [r, g, b] = COLOR_MAP[color];
@@ -105,7 +106,7 @@ export default function PolyPlace({ token, logout }) {
         img.data[idx + 0] = r;
         img.data[idx + 1] = g;
         img.data[idx + 2] = b;
-        img.data[idx + 3] = 0;
+        img.data[idx + 3] = 255;
         
         const x = coordinate % WIDTH;
         const y = Math.floor(coordinate / WIDTH);
@@ -117,8 +118,10 @@ export default function PolyPlace({ token, logout }) {
     return () => { ws.close(); };
   }, [token, logout, draw]);
   
+  // send a place command
   const place = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
+    // translate click pixel → grid coordinate
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
     const y = Math.floor((evt.clientY - rect.top)  * HEIGHT/ rect.height);
     const coord = y * WIDTH + x;
