@@ -152,7 +152,7 @@ export default function PolyPlace({ token, logout }) {
           style={{
             width:  "90vw",
             height: "90vh",
-            border: "2px solid black"
+            // border: "2px solid black"
           }}
         />
         <div className="sidebar">
