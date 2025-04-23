@@ -105,7 +105,7 @@ export default function PolyPlace({ token, logout }) {
         img.data[idx + 0] = r;
         img.data[idx + 1] = g;
         img.data[idx + 2] = b;
-        img.data[idx + 3] = 255;
+        img.data[idx + 3] = 0;
         
         const x = coordinate % WIDTH;
         const y = Math.floor(coordinate / WIDTH);
@@ -117,10 +117,8 @@ export default function PolyPlace({ token, logout }) {
     return () => { ws.close(); };
   }, [token, logout, draw]);
   
-  // send a place command
   const place = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    // translate click pixel → grid coordinate
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
     const y = Math.floor((evt.clientY - rect.top)  * HEIGHT/ rect.height);
     const coord = y * WIDTH + x;
@@ -132,7 +130,6 @@ export default function PolyPlace({ token, logout }) {
     }));
   }, [selected]);
   
-  // update the hover coords display
   const hover = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
@@ -173,124 +170,3 @@ export default function PolyPlace({ token, logout }) {
   );
 }
 
-
-
-
-// import React, { useState, useEffect, useRef, useCallback } from "react";
-// // import "dotenv/config";
-// // import "./main.css";
-
-
-// const WIDTH = 100;
-// const HEIGHT = 100;
-// const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
-
-// function PolyPlace({ token, logout }) {
-//   const [grid, setGrid] = useState(Array(WIDTH * HEIGHT).fill("white"));
-//   const [selectedColor, setSelectedColor] = useState("black");
-//   const [coordinates, setCoordinates] = useState("(0,0)");
-//   const wsRef = useRef(null);
-
-//   useEffect(() => {
-//     const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
-    
-    
-    
-//     ws.onmessage = (event) => {
-//       const message = JSON.parse(event.data);
-
-
-//       if (message.error) {
-//         console.error("WS error:", message.error);
-//         ws.close();
-//         logout();
-//         return;
-//       }
-
-//       if (message.type === "init") {
-//         const newGrid = Array(WIDTH * HEIGHT).fill("white");
-
-//         message.pixels.forEach((pix) => {
-//           newGrid[pix.coordinate] = pix.color;
-//         });
-//         setGrid(newGrid);
-//       } else if (message.type === "update") {
-//         setGrid((prevGrid) => {
-//           const newGrid = [...prevGrid];
-//           newGrid[message.coordinate] = message.color;
-//           return newGrid;
-//         });
-//       }
-//     };
-
-
-    
-//     wsRef.current = ws;
-
-//     return () => {
-//       ws.close();
-//     };
-//   }, [token, logout]);
-
-//   const handleClick = (coordinate) => {
-//     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-//       wsRef.current.send(JSON.stringify({
-//         type: "place",
-//         coordinate,
-//         color: selectedColor
-//       }));
-//     }
-//   };
-
-//   const handleMouse = (coordinate) => {
-//     const x = coordinate % WIDTH;
-//     const y = Math.floor(coordinate / WIDTH);
-//     setCoordinates(`(${x},${y})`);
-//   };
-
-//   return (
-//     <div className="polyplace-container">
-//       <nav className="navbar">
-//         <h1>PolyPlace</h1>
-//       </nav>
-
-//       <div className="main-content">
-//         <div className="canvas-container">
-//           <div
-//             className="canvas"
-//             style={{
-//               display: "grid",
-//               gridTemplateColumns: `repeat(${WIDTH}, 1fr)`,
-//               gridTemplateRows: `repeat(${HEIGHT}, 1fr)`
-//             }}>
-//             {grid.map((color, coordinate) => (
-//               <div
-//                 key={coordinate}
-//                 className="pixel"
-//                 style={{ backgroundColor: color }}
-//                 onClick={() => handleClick(coordinate)}
-//                 onMouseMove={() => handleMouse(coordinate)}
-//               />
-//             ))}
-//           </div>
-//         </div>
-
-//         <div className="sidebar">
-//           <div className="coordinates">Coordinates: {coordinates}</div>
-//           <div className="palette">
-//             {COLORS.map((color) => (
-//               <button
-//                 key={color}
-//                 className="color-button"
-//                 style={{ backgroundColor: color }}
-//                 onClick={() => setSelectedColor(color)}
-//               />
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default PolyPlace;
