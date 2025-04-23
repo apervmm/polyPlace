@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 // import "./main.css";
 
 
-const WIDTH = 160;
+const WIDTH = 100;
 const HEIGHT = 100;
 const COLORS = ["red", "blue", "green", "yellow", "black", "white", "purple", "orange"];
 
