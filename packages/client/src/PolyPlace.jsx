@@ -14,14 +14,14 @@ const COLORS = [
 ];
 
 const COLOR_MAP = {
-  red:    [255,   0,   0],
-  blue:   [  0,   0, 255],
-  green:  [  0, 128,   0],
-  yellow: [255, 255,   0],
-  black:  [  0,   0,   0],
-  white:  [255, 255, 255],
-  purple: [128,   0, 128],
-  orange: [255, 165,   0],
+  red: [255, 0, 0],
+  blue: [0, 0, 255],
+  green: [0, 128, 0],
+  yellow: [255, 255, 0],
+  black: [0, 0, 0],
+  white: [255, 255, 255],
+  purple: [128, 0, 128],
+  orange: [255, 165, 0],
 };
 
 export default function PolyPlace({ token, logout }) {
@@ -118,10 +118,8 @@ export default function PolyPlace({ token, logout }) {
     return () => { ws.close(); };
   }, [token, logout, draw]);
   
-  // send a place command
   const place = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    // translate click pixel → grid coordinate
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
     const y = Math.floor((evt.clientY - rect.top)  * HEIGHT/ rect.height);
     const coord = y * WIDTH + x;
@@ -142,7 +140,7 @@ export default function PolyPlace({ token, logout }) {
   
   return (
     <div className="polyplace-container">
-      <nav className="navbar"><h1>PolyPlace</h1></nav>
+      <nav className="navbar"><h1>p/Place</h1></nav>
       <div className="main-content">
         <canvas
           ref={canvasRef}
