@@ -5,8 +5,8 @@ import React, {
   useCallback
 } from "react";
 
-const WIDTH =200;
-const HEIGHT = 200;
+const WIDTH = 320;
+const HEIGHT = 180;
 
 const COLORS = [
   "red", "blue", "green", "yellow",
@@ -26,8 +26,8 @@ const COLOR_MAP = {
 
 export default function PolyPlace({ token, logout }) {
   const canvasRef = useRef(null);
-  const wsRef     = useRef(null);
-  const [coords, setCoords]     = useState("(0,0)");
+  const wsRef = useRef(null);
+  const [coords, setCoords] = useState("(0,0)");
   const [selected, setSelected] = useState("black");
   const imageDataRef = useRef(null);
   
@@ -36,6 +36,7 @@ export default function PolyPlace({ token, logout }) {
   // helper for buffer
   const draw = useCallback((dirty) => {
     const ctx = canvasRef.current.getContext("2d");
+
     if (!dirty) {
       ctx.putImageData(imageDataRef.current, 0, 0);
     } else {
@@ -74,6 +75,8 @@ export default function PolyPlace({ token, logout }) {
     const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
     wsRef.current = ws;
     
+
+
     ws.onmessage = (evt) => {
       const msg = JSON.parse(evt.data);
       if (msg.error) {
@@ -118,6 +121,7 @@ export default function PolyPlace({ token, logout }) {
     return () => { ws.close(); };
   }, [token, logout, draw]);
   
+
   const place = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
@@ -131,6 +135,9 @@ export default function PolyPlace({ token, logout }) {
     }));
   }, [selected]);
   
+
+
+  
   const hover = useCallback((evt) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
@@ -138,23 +145,31 @@ export default function PolyPlace({ token, logout }) {
     setCoords(`(${x},${y})`);
   }, []);
   
+
+
   return (
     <div className="polyplace-container">
-      <nav className="navbar"><h1>p/Place</h1></nav>
+
+      <nav className="navbar">
+        <h1>
+          p/Place
+        </h1>
+      </nav>
+
       <div className="main-content">
         <canvas
           ref={canvasRef}
           className="canvas"
           onClick={place}
           onMouseMove={hover}
-          style={{
-            width:  "90vw",
-            height: "90vh",
-            // border: "2px solid black"
-          }}
         />
+
+
+
+
         <div className="sidebar">
           <div className="coordinates">Coordinates: {coords}</div>
+
           <div className="palette">
             {COLORS.map(c => (
               <button
@@ -167,6 +182,8 @@ export default function PolyPlace({ token, logout }) {
           </div>
         </div>
       </div>
+
+
     </div>
   );
 }
