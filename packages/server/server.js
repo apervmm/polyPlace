@@ -36,20 +36,20 @@ async function testConnection() {
 
 async function getState() {
     const rows = await sql`
-        SELECT DISTINCT ON (coordinate)
-            coordinate, color, timestamp, userid
+        SELECT DISTINCT ON (x, y)
+            x, y, color, timestamp, userid
         FROM actions
-        ORDER BY coordinate, timestamp DESC`;
+        ORDER BY x, y, timestamp DESC`;
     // console.log(rows);
     return rows;
 }
 
 
 
-async function insertAction(coordinate, color, userId) {
+async function insertAction(x, y, color, userId) {
     const [row] = await sql`
-        INSERT INTO actions (coordinate, color, userid)
-        VALUES (${coordinate}, ${color}, ${userId})
+        INSERT INTO actions (x, y, color, userid)
+        VALUES (${x}, ${y}, ${color}, ${userId})
         RETURNING *`;
     console.log("Inserted into action:", row);
     return row;
@@ -67,18 +67,18 @@ function broadcast(wsServer, payload) {
 
 
 async function handlePlace(wsServer, data, userId) {
-    const { coordinate, color } = data;
+    const { x, y, color } = data;
 
     const event = {
         type: "update",
-        coordinate,
+        x, y,
         color,
         userId,
         timestamp: new Date().toISOString()
     };
 
 
-    await insertAction(coordinate, color, userId);
+    await insertAction(x, y, color, userId);
     broadcast(wsServer, event);
 }
 

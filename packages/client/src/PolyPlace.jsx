@@ -1,190 +1,300 @@
 import React, {
-  useState,
-  useEffect,
-  useRef,
+  useState, 
+  useEffect, 
+  useRef, 
   useCallback
 } from "react";
 
-const WIDTH = 320;
-const HEIGHT = 180;
 
-const COLORS = [
-  "red", "blue", "green", "yellow",
-  "black","white","purple","orange"
-];
+const BOARD_W  = 960;
+const BOARD_H  = 540;
+const MIN_ZOOM = 1;    
+const MAX_ZOOM = 6; 
+const PAN_SPEED = 80;
 
-const COLOR_MAP = {
-  red: [255, 0, 0],
-  blue: [0, 0, 255],
-  green: [0, 128, 0],
-  yellow: [255, 255, 0],
-  black: [0, 0, 0],
-  white: [255, 255, 255],
-  purple: [128, 0, 128],
-  orange: [255, 165, 0],
-};
+const COLORS = ["#ff0000","#0000ff","#008000","#ffff00","#000000","#ffffff","#800080","#ffa500"];
 
-export default function PolyPlace({ token, logout }) {
-  const canvasRef = useRef(null);
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [
+    (n >> 16) & 255,
+    (n >> 8) & 255,
+    n & 255
+  ];
+} 
+
+
+const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
+// const ADDR_LOCAL = "ws://localhost:8765";
+
+
+function clamp(val, min, max) { 
+  return Math.max(min, Math.min(max, val)); 
+}
+
+
+
+function helper(xPx, yPx, view, zoom, viewPxW, viewPxH) {
+  const vx = xPx / viewPxW;          
+  const vy = yPx / viewPxH;
+  return {
+    bx : Math.floor(view.x + vx * BOARD_W / zoom),
+    by : Math.floor(view.y + vy * BOARD_H / zoom)
+  };
+}
+
+
+
+
+
+export default function PolyPlace({ token, logout })
+{
+  const viewCanvas = useRef(null);       
+  const boardCanvas = useRef(null);       
   const wsRef = useRef(null);
+
+  const [camera, setCamera] = useState({ x:0, y:0, zoom:1 });  
   const [coords, setCoords] = useState("(0,0)");
-  const [selected, setSelected] = useState("black");
-  const imageDataRef = useRef(null);
-  
-
-
-  // helper for buffer
-  const draw = useCallback((dirty) => {
-    const ctx = canvasRef.current.getContext("2d");
-
-    if (!dirty) {
-      ctx.putImageData(imageDataRef.current, 0, 0);
-    } else {
-      const { x, y } = dirty;
-      ctx.putImageData(
-        imageDataRef.current,
-        0, 0,
-        x, y, 1, 1
-      );
-    }
-  }, []);
-  
+  const [colour, setColour] = useState("black");
 
 
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas.width  = WIDTH;
-    canvas.height = HEIGHT;
-    const ctx = canvas.getContext("2d");
-    
-    // create black white map
-    const img = ctx.createImageData(WIDTH, HEIGHT);
-    for (let i = 0; i < img.data.length; i += 4) {
-      img.data[i + 0] = 255; // R
-      img.data[i + 1] = 255; // G
-      img.data[i + 2] = 255; // B
-      img.data[i + 3] = 0; // A
-    }
+    const off = document.createElement("canvas");
+    off.width  = BOARD_W;
+    off.height = BOARD_H;
+    const oCtx = off.getContext("2d");
+    const img  = oCtx.createImageData(BOARD_W, BOARD_H);    
 
+    for (let i = 0; i < img.data.length; i += 4) img.data[i] = 0;
 
+    oCtx.putImageData(img, 0, 0);
+    boardCanvas.current = off;
 
-    ctx.putImageData(img, 0, 0);
-    imageDataRef.current = img;
-    
-    const ws = new WebSocket(`wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net/?token=${token}`);
+    const ws = new WebSocket(`${ADDR}/?token=${token}`);
     wsRef.current = ws;
-    
 
-
-    ws.onmessage = (evt) => {
-      const msg = JSON.parse(evt.data);
-      if (msg.error) {
-        ws.close();
-        logout();
-        return;
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.error) { 
+        ws.close(); 
+        logout(); 
+        return; 
       }
-      
 
 
-      // init
+
+      const paint = (idx, col) => {
+        const [r,g,b] = hexToRgb(col);
+        img.data[idx+0]=r; 
+        img.data[idx+1]=g; 
+        img.data[idx+2]=b; 
+        img.data[idx+3]=255;
+      };
+
       if (msg.type === "init") {
-        msg.pixels.forEach(({ coordinate, color }) => {
-          const [r, g, b] = COLOR_MAP[color];
-          const idx = coordinate * 4;
-          img.data[idx + 0] = r;
-          img.data[idx + 1] = g;
-          img.data[idx + 2] = b;
-          img.data[idx + 3] = 255;
-        });
-        draw(); 
+        msg.pixels.forEach(({x, y, color}) => paint((y * BOARD_W + x) * 4, color));
+        oCtx.putImageData(img, 0, 0);
       }
-      
 
-      // update
-      else if (msg.type === "update") {
-        const { coordinate, color } = msg;
-        const [r, g, b] = COLOR_MAP[color];
-        const idx = coordinate * 4;
-        img.data[idx + 0] = r;
-        img.data[idx + 1] = g;
-        img.data[idx + 2] = b;
-        img.data[idx + 3] = 255;
-        
-        const x = coordinate % WIDTH;
-        const y = Math.floor(coordinate / WIDTH);
-        draw({ x, y });
+
+      if (msg.type === "update") {
+        paint((msg.y*BOARD_W + msg.x)*4, msg.color);
+        oCtx.putImageData(img, 0, 0);
       }
     };
-    
-    ws.onerror = () => { ws.close(); logout(); };
-    return () => { ws.close(); };
-  }, [token, logout, draw]);
-  
 
-  const place = useCallback((evt) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
-    const y = Math.floor((evt.clientY - rect.top)  * HEIGHT/ rect.height);
-    const coord = y * WIDTH + x;
+    ws.onerror = () => {
+      ws.close(); 
+      logout(); 
+    };
+    return () => ws.close();
+  }, [token, logout]);
+
+
+
+
+
+  const redraw = useCallback(() => 
+  {
+    const vCtx = viewCanvas.current.getContext("2d");
+
+    vCtx.imageSmoothingEnabled = false;
+
+    const vw = BOARD_W / camera.zoom;
+    const vh = BOARD_H / camera.zoom;
+    vCtx.clearRect(0,0, vCtx.canvas.width, vCtx.canvas.height);
+    vCtx.drawImage(boardCanvas.current,
+      camera.x, camera.y, vw, vh,
+      0, 0, vCtx.canvas.width, vCtx.canvas.height
+    );
+  }, [camera]);
+
+
+
+
+  /* fitting canvas */
+  useEffect(() => {
+
+    function fit() {
+      const node = viewCanvas.current;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const size = Math.floor(Math.min(w, h*16/9));
+      node.width  = size;
+      node.height = Math.floor(size * 9/16);
+      // redraw();
+    }
+
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [redraw]);
+
+
+
+  /* animation */
+  useEffect(() => {
+    let animId;
+    function loop()
+    { 
+      redraw(); 
+      animId = requestAnimationFrame(loop); 
+    }
     
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+
+  }, [redraw]);
+
+
+
+
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const rect = viewCanvas.current.getBoundingClientRect();
+    const { bx, by } = helper(
+      e.clientX - rect.left, e.clientY - rect.top,
+      camera, camera.zoom, rect.width, rect.height
+    );
+
+    const newZoom = clamp(
+      camera.zoom * (e.deltaY > 0 ? 0.9 : 1.1),
+      MIN_ZOOM, MAX_ZOOM
+    );
+
+
+    const vw = BOARD_W / newZoom;
+    const vh = BOARD_H / newZoom;
+
+    const newCam = {
+      zoom : newZoom,
+      x : clamp(bx - vw * 0.5, 0, BOARD_W - vw),
+      y : clamp(by - vh * 0.5, 0, BOARD_H - vh)
+    };
+    setCamera(newCam);
+  };
+
+  /* drag */
+  const dragRef = useRef(null);  
+
+  const startDrag =(e) => { 
+    dragRef.current = {
+      x: e.clientX, 
+      y: e.clientY
+    };
+  };
+
+  const endDrag = () => { 
+    dragRef.current = null; 
+  };
+
+  const moveDrag = (e) => {
+    if (!dragRef.current) return;
+
+    const dx = e.clientX - dragRef.current.x;
+    const dy = e.clientY - dragRef.current.y;
+
+
+    dragRef.current = {
+      x: e.clientX, 
+      y: e.clientY
+    };
+
+    const rect = viewCanvas.current;
+    const vwPx = rect.width, vhPx = rect.height;
+
+    const speed = (MAX_ZOOM / camera.zoom) * PAN_SPEED; 
+
+    const nx = camera.x - dx * BOARD_W / (camera.zoom*vwPx) * speed/100;
+    const ny = camera.y - dy * BOARD_H / (camera.zoom*vhPx) * speed/100;
+
+    const newCam = {
+      ...camera,
+      x : clamp(nx, 0, BOARD_W - BOARD_W/camera.zoom),
+      y : clamp(ny, 0, BOARD_H - BOARD_H/camera.zoom)
+    };
+    setCamera(newCam);
+  };
+
+  /* place a pixel */
+  const place = (e) => {
+    const rect = viewCanvas.current.getBoundingClientRect();
+
+    const { bx, by } = helper(e.clientX - rect.left, e.clientY - rect.top, camera, camera.zoom, rect.width, rect.height);
+
+
+    if (bx < 0 || bx >= BOARD_W || by < 0 || by >= BOARD_H) return;
+
     wsRef.current.send(JSON.stringify({
-      type: "place",
-      coordinate: coord,
-      color: selected
+      type:"place", 
+      x: bx,
+      y: by,
+      // coordinate: by*BOARD_W + bx, 
+      color: colour
     }));
-  }, [selected]);
-  
+  };
 
-
-  
-  const hover = useCallback((evt) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = Math.floor((evt.clientX - rect.left) * WIDTH / rect.width);
-    const y = Math.floor((evt.clientY - rect.top)  * HEIGHT/ rect.height);
-    setCoords(`(${x},${y})`);
-  }, []);
-  
-
+  const hover = e => {
+    const rect = viewCanvas.current.getBoundingClientRect();
+    const { bx, by } = helper(
+      e.clientX - rect.left, e.clientY - rect.top,
+      camera, camera.zoom, rect.width, rect.height
+    );
+    setCoords(`(${bx},${by})`);
+  };
 
   return (
     <div className="polyplace-container">
-
-      <nav className="navbar">
-        <h1>
-          p/Place
-        </h1>
-      </nav>
+      <nav className="navbar"><h1>p/Place</h1></nav>
 
       <div className="main-content">
+
         <canvas
-          ref={canvasRef}
+          ref={viewCanvas}
           className="canvas"
+          onWheel={handleWheel}
+          onMouseDown={startDrag}
+          onMouseMove={e=>{moveDrag(e); hover(e);}}
+          onMouseUp={endDrag}
+          onMouseLeave={endDrag}
           onClick={place}
-          onMouseMove={hover}
         />
 
-
-
-
         <div className="sidebar">
-          <div className="coordinates">Coordinates: {coords}</div>
-
+          <div className="coordinates">Coords: {coords}</div>
           <div className="palette">
-            {COLORS.map(c => (
-              <button
-                key={c}
-                className="color-button"
-                style={{ backgroundColor: c }}
-                onClick={() => setSelected(c)}
-              />
+            {COLORS.map(c=>(
+              <button key={c}
+                  className="color-button"
+                  style={{backgroundColor:c,
+                          border:c===colour?"2px solid #000":"1px solid #ccc"}}
+                  onClick={()=>setColour(c)}/>
             ))}
           </div>
         </div>
       </div>
-
-
     </div>
   );
 }
-
