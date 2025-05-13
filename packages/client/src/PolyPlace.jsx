@@ -25,7 +25,7 @@ function hexToRgb(hex) {
 
 
 const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
-// const ADDR_LOCAL = "ws://localhost:8765";
+// const ADDR = "ws://localhost:8765";
 
 
 function clamp(val, min, max) { 
@@ -172,12 +172,23 @@ export default function PolyPlace({ token, logout })
 
 
   const handleWheel = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+
     const rect = viewCanvas.current.getBoundingClientRect();
-    const { bx, by } = helper(
-      e.clientX - rect.left, e.clientY - rect.top,
-      camera, camera.zoom, rect.width, rect.height
-    );
+    // console.log(rect);
+
+
+    // const { bx, by } = helper(
+    //   e.clientX - rect.left, e.clientY - rect.top,
+    //   camera, camera.zoom, rect.width, rect.height
+    // );
+
+    const vx = (e.clientX - rect.left) / rect.width;
+    const vy = (e.clientY - rect.top) / rect.height;
+    
+
+    const bx = camera.x + vx * BOARD_W / camera.zoom;
+    const by = camera.y + vy * BOARD_H / camera.zoom;
 
     const newZoom = clamp(
       camera.zoom * (e.deltaY > 0 ? 0.9 : 1.1),
@@ -190,8 +201,10 @@ export default function PolyPlace({ token, logout })
 
     const newCam = {
       zoom : newZoom,
-      x : clamp(bx - vw * 0.5, 0, BOARD_W - vw),
-      y : clamp(by - vh * 0.5, 0, BOARD_H - vh)
+      // x : clamp(bx - vw * 0.5, 0, BOARD_W - vw),
+      // y : clamp(by - vh * 0.5, 0, BOARD_H - vh)
+      x : clamp(bx - vw * vx, 0, BOARD_W - vw),  
+      y : clamp(by - vh * vy, 0, BOARD_H - vh)
     };
     setCamera(newCam);
   };
@@ -238,7 +251,7 @@ export default function PolyPlace({ token, logout })
     setCamera(newCam);
   };
 
-  /* place a pixel */
+  // place a pixel 
   const place = (e) => {
     const rect = viewCanvas.current.getBoundingClientRect();
 
