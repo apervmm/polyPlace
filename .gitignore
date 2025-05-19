@@ -3,3 +3,6 @@
 .venv
 .env
 /packages/server_2
+/packages/test
+test.js
+test2.py

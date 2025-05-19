@@ -23,6 +23,18 @@ body {
 }
 
 
+.navbar{ position:relative; }
+.nav-btn{
+  position:absolute;
+  right:20px;
+  top:50%;
+  transform:translateY(-50%);
+  padding:6px 12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+
 
 .main-content {
   display: flex;
@@ -97,4 +109,30 @@ body {
 }
 
 
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+.modal{
+  background:#fff;
+  padding:24px 32px;
+  border-radius:8px;
+  min-width:320px;
+  position:relative;
+}
+.close-btn{
+  position:absolute;
+  top:8px;
+  right:8px;
+  font-size:24px;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
 

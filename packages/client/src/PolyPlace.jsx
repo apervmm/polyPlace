@@ -47,7 +47,7 @@ function helper(xPx, yPx, view, zoom, viewPxW, viewPxH) {
 
 
 
-export default function PolyPlace({ token, logout })
+export default function PolyPlace({ token, logout, openAuth })
 {
   const viewCanvas = useRef(null);       
   const boardCanvas = useRef(null);       
@@ -71,14 +71,17 @@ export default function PolyPlace({ token, logout })
     oCtx.putImageData(img, 0, 0);
     boardCanvas.current = off;
 
-    const ws = new WebSocket(`${ADDR}/?token=${token}`);
+    const ws = new WebSocket(token ? `${ADDR}/?token=${token}` : ADDR);
+
     wsRef.current = ws;
 
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
       if (msg.error) { 
-        ws.close(); 
-        logout(); 
+        if (token) {
+          ws.close(); 
+          logout(); 
+        }
         return; 
       }
 
@@ -253,6 +256,11 @@ export default function PolyPlace({ token, logout })
 
   // place a pixel 
   const place = (e) => {
+    if (!token) {
+      openAuth();
+      return;
+    }
+
     const rect = viewCanvas.current.getBoundingClientRect();
 
     const { bx, by } = helper(e.clientX - rect.left, e.clientY - rect.top, camera, camera.zoom, rect.width, rect.height);
@@ -280,7 +288,18 @@ export default function PolyPlace({ token, logout })
 
   return (
     <div className="polyplace-container">
-      <nav className="navbar"><h1>p/Place</h1></nav>
+      <nav className="navbar">
+
+        <h1>p/Place</h1>
+
+        <button
+          className="nav-btn"
+          onClick={() => (token ? logout() : openAuth())}
+          >
+          {token ? "Logout" : "Login"}
+        </button>
+        
+      </nav>
 
       <div className="main-content">
 
