@@ -24,8 +24,8 @@ function hexToRgb(hex) {
 } 
 
 
-// const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
-const ADDR = "ws://localhost:8765";
+const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
+// const ADDR = "ws://localhost:8765";
 
 
 function clamp(val, min, max) { 
