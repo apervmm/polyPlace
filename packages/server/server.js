@@ -85,26 +85,38 @@ async function handlePlace(wsServer, data, userId) {
 
 wsServer.on("connection", async (connection, request) => {
     const { token } = url.parse(request.url, true).query;
-    if (!token) {
-        connection.send(JSON.stringify({ error: "No token provided" }));
-        connection.close();
-        return;
+
+    // if (!token) {
+    //     connection.send(JSON.stringify({ error: "No token provided" }));
+    //     connection.close();
+    //     return;
+    // }
+
+    let userId = null; 
+
+    // try {
+    //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //     userId = decoded.userId; 
+    //     // console.log("Decoded JWT:", decoded);
+    // } catch (err) {
+    //     console.error("JWT verification failed:", err);
+    //     connection.send(JSON.stringify({ error: "Invalid token" }));
+    //     connection.close();
+    //     return;
+    // }
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            userId = decoded.userId;
+        } catch (err) {
+            console.error("JWT verification failed:", err);
+        }
     }
 
-    let userId;
+    console.log(`New client ${userId ? "userId="+userId : "(guest)"}`);
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        userId = decoded.userId; 
-        // console.log("Decoded JWT:", decoded);
-    } catch (err) {
-        console.error("JWT verification failed:", err);
-        connection.send(JSON.stringify({ error: "Invalid token" }));
-        connection.close();
-        return;
-    }
-
-    console.log(`New client userId=${userId}`);
+    // console.log(`New client userId=${userId}`);
 
     const pixelState = await getState();
     connection.send(JSON.stringify({
