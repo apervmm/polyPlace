@@ -11,7 +11,7 @@
 
 
 
-### Develpment!
+### Develpment:
 
 1. In the **auth-server** package, execute:
 
