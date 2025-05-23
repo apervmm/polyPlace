@@ -1,4 +1,4 @@
-### polyPlace is a real-time and multiplayer game inspired by r/Place.
+### poly/Place is a real-time and multiplayer game inspired by r/Place.
 
 ***Prod:*** https://poly-place-client.vercel.app/ 
 
