@@ -1,6 +1,6 @@
 ### poly/Place is a real-time and multiplayer game inspired by r/Place.
 
-***Prod:*** https://poly-place-client.vercel.app/ 
+***Prod:*** https://pplace.vercel.app/ 
 
 ### Packages:
 - ***Auth Server:*** The Auth server is an ExpressJS REST API that handles two POST requests using JWT: /login and /register. The package is hosted on Vercel.
