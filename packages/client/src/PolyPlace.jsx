@@ -135,18 +135,28 @@ export default function PolyPlace({ token, logout, openAuth })
 
 
 
-
-  /* fitting canvas */
   useEffect(() => {
 
     function fit() {
       const node = viewCanvas.current;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const size = Math.floor(Math.min(w, h*16/9));
-      node.width  = size;
-      node.height = Math.floor(size * 9/16);
-      // redraw();
+
+
+      const maxW = window.innerWidth;
+      const maxH = window.innerHeight;
+
+      const w = Math.floor(Math.min(maxW, maxH * BOARD_W / BOARD_H));
+      const h = Math.floor(w * BOARD_H / BOARD_W);
+      // const size = Math.floor(Math.min(w, h*16/9));
+
+
+
+      // node.width  = size;
+      // node.height = Math.floor(size * 9/16);
+      node.width  = w;
+      node.height = h;
+
+      node.style.width  = `${w}px`;
+      node.style.height = `${h}px`;
     }
 
     fit();

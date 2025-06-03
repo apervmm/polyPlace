@@ -54,8 +54,8 @@ body {
   display: block;
   /* grid-template-columns: repeat(100, 1fr);
   grid-template-rows: repeat(100, 1fr); */
-  width: 90%;
-  height: auto;
+  /* width: 90%;
+  height: auto; */
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   /* border: 1px solid black; */
