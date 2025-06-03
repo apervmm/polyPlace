@@ -224,12 +224,14 @@ export default function PolyPlace({ token, logout, openAuth })
 
   /* drag */
   const dragRef = useRef(null);  
+  const draggedRef = useRef(false);
 
   const startDrag =(e) => { 
     dragRef.current = {
       x: e.clientX, 
       y: e.clientY
     };
+    draggedRef.current = false;
   };
 
   const endDrag = () => { 
@@ -241,6 +243,10 @@ export default function PolyPlace({ token, logout, openAuth })
 
     const dx = e.clientX - dragRef.current.x;
     const dy = e.clientY - dragRef.current.y;
+
+
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2)           
+      draggedRef.current = true;
 
 
     dragRef.current = {
@@ -266,6 +272,11 @@ export default function PolyPlace({ token, logout, openAuth })
 
   // place a pixel 
   const place = (e) => {
+    if (draggedRef.current) {
+      draggedRef.current = false;
+      return;
+    }
+
     if (!token) {
       openAuth();
       return;
