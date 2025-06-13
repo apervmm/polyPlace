@@ -38,10 +38,19 @@
            ON UPDATE CASCADE
    );
    ```
+3. In ***Supabase*** account click on coonect and copy ***Transiaction Pooler***
 4. In ***server*** package, create .env file and add:
-5. In ***auth-server*** package, create .env file and add:
-6. In ***client*** package, create .env file and add:
-7. In root foleder, execute:
+
+6. In ***auth*** package, create .env file and add:
+   ```
+   SUPABASE_URL=https://tquljfkijanagvckgxse.supabase.co
+   SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..JgpFunuctbZ9GHcHGZp7Um0BqmSreUBR83d_Rtzw0rY
+   SUPABASE_ANON=.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxdWxqZmtpamFuYWd2Y2tneHNlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MjYyMzg4MSwiZXhwIjoyMDU4MTk5ODgxfQ.JgpFunuctbZ9GHcHGZp7Um0BqmSreUBR83d_Rtzw0rY
+   DATABASE_URL=postgresql://postgres.tquljfkijanagvckgxse:Al1591431!@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+   JWT_SECRET=<add any key>
+   JWT_EXPIRES_IN=1d
+   ```
+8. In root foleder, execute:
    ```
    npm install
    ```
