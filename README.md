@@ -50,17 +50,18 @@
    JWT_SECRET=<add any key>
    JWT_EXPIRES_IN=1d
    ```
-8. In root foleder, execute:
+   
+7. In root foleder, execute:
 ```
 npm install
 ```
-9. In the **auth-server** package, execute:
+8. In the **auth-server** package, execute:
 ```
 node auth.js
 ```
 This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
    
-10. Then, in the **server** package, execute:
+9. Then, in the **server** package, execute:
    ```
    node server.js
    ```
@@ -68,7 +69,7 @@ This starts the auth-server at [http://localhost:3000/](http://localhost:3000/).
    
 
    
-11. In the **client** package, execute:
+10. In the **client** package, execute:
 ```
 npm run dev
 ```
