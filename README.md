@@ -37,33 +37,32 @@
    Note: In development, make sure to replace the fetching APIs as needed.
 
 
-
-   # Running on Localhost:
-   1. Create an account on Supabe: https://supabase.com/
-   2. In SQL Editor run following queries:
-      ```
-      CREATE TABLE IF NOT EXISTS users (
-          userid UUID PRIMARY KEY,
-          username TEXT NOT NULL UNIQUE,
-          password TEXT NOT NULL,
-          email TEXT NOT NULL UNIQUE,
-          registertime TIMESTAMPTZ DEFAULT now()
-      );
-      
-      
-      CREATE TABLE IF NOT EXISTS actions (
-          id SERIAL PRIMARY KEY,
-          coordinate TEXT NOT NULL,
-          color TEXT NOT NULL,
-          userid UUID NOT NULL,
-          timestamp TIMESTAMPTZ DEFAULT now(),
-          CONSTRAINT fk_userid
-              FOREIGN KEY (userid)
-              REFERENCES users (userid)
-              ON DELETE CASCADE
-              ON UPDATE CASCADE
-      );
-      ```
+# Running on Localhost:
+1. Create an account on Supabe: https://supabase.com/
+2. In SQL Editor run following queries:
+   ```
+   CREATE TABLE IF NOT EXISTS users (
+       userid UUID PRIMARY KEY,
+       username TEXT NOT NULL UNIQUE,
+       password TEXT NOT NULL,
+       email TEXT NOT NULL UNIQUE,
+       registertime TIMESTAMPTZ DEFAULT now()
+   );
+   
+   
+   CREATE TABLE IF NOT EXISTS actions (
+       id SERIAL PRIMARY KEY,
+       coordinate TEXT NOT NULL,
+       color TEXT NOT NULL,
+       userid UUID NOT NULL,
+       timestamp TIMESTAMPTZ DEFAULT now(),
+       CONSTRAINT fk_userid
+           FOREIGN KEY (userid)
+           REFERENCES users (userid)
+           ON DELETE CASCADE
+           ON UPDATE CASCADE
+   );
+   ```
 
 
 
