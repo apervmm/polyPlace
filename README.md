@@ -50,7 +50,6 @@
    ```
    node auth.js
    ```
-
    This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
 
 10. Then, in the **server** package, execute:
