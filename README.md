@@ -2,7 +2,7 @@
 
 ***Prod:*** https://pplace.vercel.app/ 
 
-### Packages:
+### Architecture:
 - ***Auth Server:*** The Auth server is an ExpressJS REST API that handles two POST requests using JWT: /login and /register. The package is hosted on Vercel.
 
 - ***Client:*** It's a React client-side application that manages the UI/UX. The client listens to the authentication server ***auth-server*** and the WebSocket server ***server*** to handle the canvas board using createImageData(). The package is hosted on Vercel.
@@ -11,14 +11,10 @@
 
 
 
-### Architecture:
-
-
-
-
 # Running on Localhost:
-1. Create an account on Supabe: https://supabase.com/
-2. In SQL Editor run following queries:
+1. Fork the Main repository
+2. Create an account on Supabase: https://supabase.com/
+3. In SQL Editor, run the following queries:
    ```
    CREATE TABLE IF NOT EXISTS users (
        userid UUID PRIMARY KEY,
@@ -42,8 +38,10 @@
            ON UPDATE CASCADE
    );
    ```
-
-3. In the **auth-server** package, execute:
+4. In ***server*** package, create .env file and add:
+5. In ***auth-server*** package, create .env file and add:
+6. In ***client*** package, create .env file and add:
+7. In the **auth-server** package, execute:
 
    ```
    node auth.js
@@ -51,17 +49,17 @@
 
    This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
 
-4. Then, in the **server** package, execute:
+8. Then, in the **server** package, execute:
    ```
    node server.js
    ```
    This starts your WebSocket server [ws://127.0.0.1:8765/](ws://127.0.0.1:8765/). Keep it running in a separate terminal.
    
-5. In the **client** package, execute:
+9. In the **client** package, execute:
    ```
    npm run dev
    ```
-   This should take you to [http://127.0.0.1:8080/](http://127.0.0.1:5173/), where the the app will be running.
+   This should take you to [http://127.0.0.1:8080/](http://127.0.0.1:5173/), where the app will be running.
 
 
    Note: In development, make sure to replace the fetching APIs as needed.
