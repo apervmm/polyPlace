@@ -43,10 +43,10 @@
 
 6. In ***auth*** package, create .env file and add:
    ```
-   SUPABASE_URL=https://tquljfkijanagvckgxse.supabase.co
-   SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..JgpFunuctbZ9GHcHGZp7Um0BqmSreUBR83d_Rtzw0rY
-   SUPABASE_ANON=.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxdWxqZmtpamFuYWd2Y2tneHNlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MjYyMzg4MSwiZXhwIjoyMDU4MTk5ODgxfQ.JgpFunuctbZ9GHcHGZp7Um0BqmSreUBR83d_Rtzw0rY
-   DATABASE_URL=postgresql://postgres.tquljfkijanagvckgxse:Al1591431!@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+   SUPABASE_URL=<add supabase url from settings>
+   SUPABASE_SECRET_KEY=<add sectet key>
+   SUPABASE_ANON=<add anon key from settings>
+   DATABASE_URL=<add transaction pooler>
    JWT_SECRET=<add any key>
    JWT_EXPIRES_IN=1d
    ```
