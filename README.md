@@ -13,28 +13,7 @@
 
 ### Architecture:
 
-1. In the **auth-server** package, execute:
 
-   ```
-   node auth.js
-   ```
-
-   This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
-
-2. Then, in the **server** package, execute:
-   ```
-   node server.js
-   ```
-   This starts your WebSocket server [ws://127.0.0.1:8765/](ws://127.0.0.1:8765/). Keep it running in a separate terminal.
-   
-4. In the **client** package, execute:
-   ```
-   npm run dev
-   ```
-   This should take you to [http://127.0.0.1:8080/](http://127.0.0.1:5173/), where the the app will be running.
-
-
-   Note: In development, make sure to replace the fetching APIs as needed.
 
 
 # Running on Localhost:
@@ -63,6 +42,29 @@
            ON UPDATE CASCADE
    );
    ```
+
+3. In the **auth-server** package, execute:
+
+   ```
+   node auth.js
+   ```
+
+   This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
+
+4. Then, in the **server** package, execute:
+   ```
+   node server.js
+   ```
+   This starts your WebSocket server [ws://127.0.0.1:8765/](ws://127.0.0.1:8765/). Keep it running in a separate terminal.
+   
+5. In the **client** package, execute:
+   ```
+   npm run dev
+   ```
+   This should take you to [http://127.0.0.1:8080/](http://127.0.0.1:5173/), where the the app will be running.
+
+
+   Note: In development, make sure to replace the fetching APIs as needed.
 
 
 
