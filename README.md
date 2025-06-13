@@ -51,11 +51,16 @@
    node auth.js
    ```
 This starts the auth-server at [http://localhost:3000/](http://localhost:3000/). Keep it running in a separate terminal.
+
+
 10. Then, in the **server** package, execute:
    ```
    node server.js
    ```
    This starts your WebSocket server [ws://127.0.0.1:8765/](ws://127.0.0.1:8765/). Keep it running in a separate terminal.
+
+
+   
 11. In the **client** package, execute:
    ```
    npm run dev
