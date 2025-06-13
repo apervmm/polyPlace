@@ -40,16 +40,22 @@
    ```
 3. In ***Supabase*** account click on coonect and copy ***Transiaction Pooler***
 4. In ***server*** package, create .env file and add:
+```
+SUPABASE_URL=<add supabase url from settings>
+SUPABASE_SECRET_KEY=<add sectet key>
+SUPABASE_ANON=<add anon key from settings>
+DATABASE_URL=<add transaction pooler>
+```
 
 6. In ***auth*** package, create .env file and add:
-   ```
-   SUPABASE_URL=<add supabase url from settings>
-   SUPABASE_SECRET_KEY=<add sectet key>
-   SUPABASE_ANON=<add anon key from settings>
-   DATABASE_URL=<add transaction pooler>
-   JWT_SECRET=<add any key>
-   JWT_EXPIRES_IN=1d
-   ```
+```
+SUPABASE_URL=<add supabase url from settings>
+SUPABASE_SECRET_KEY=<add sectet key>
+SUPABASE_ANON=<add anon key from settings>
+DATABASE_URL=<add transaction pooler>
+JWT_SECRET=<add any key>
+JWT_EXPIRES_IN=1d
+```
    
 7. In root foleder, execute:
 ```
