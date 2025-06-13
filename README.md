@@ -84,6 +84,9 @@ This should take you to [http://127.0.0.1:8080/](http://127.0.0.1:5173/), where 
 Note: In development, make sure to replace the fetching APIs as needed.
 
 
+11. When commiting changes, please make sure to gitignore ***/dist***, ***.env***, ***node_modules***, and all other private folders/files
+
+
 
 
 
