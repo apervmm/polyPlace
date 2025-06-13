@@ -1,8 +1,8 @@
-### poly/Place is a real-time and multiplayer game inspired by r/Place.
+# poly/Place is a real-time and multiplayer game inspired by r/Place.
 
 ***Prod:*** https://pplace.vercel.app/ 
 
-### Architecture:
+## Architecture:
 - ***Auth Server:*** The Auth server is an ExpressJS REST API that handles two POST requests using JWT: /login and /register. The package is hosted on Vercel.
 
 - ***Client:*** It's a React client-side application that manages the UI/UX. The client listens to the authentication server ***auth-server*** and the WebSocket server ***server*** to handle the canvas board using createImageData(). The package is hosted on Vercel.
@@ -11,7 +11,7 @@
 
 
 
-# Running on Localhost:
+## Running on Localhost:
 1. Fork the Main repository
 2. Create an account on Supabase: https://supabase.com/
 3. In SQL Editor, run the following queries:
