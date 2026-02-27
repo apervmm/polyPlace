@@ -6,11 +6,10 @@ import React, {
 } from "react";
 
 
-const BOARD_W  = 960;
+const BOARD_W  = 540;
 const BOARD_H  = 540;
-const MIN_ZOOM = 1;    
-const MAX_ZOOM = 6; 
-const PAN_SPEED = 80;
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 40;
 
 const COLORS = ["#ff0000","#0000ff","#008000","#ffff00","#000000","#ffffff","#800080","#ffa500"];
 
@@ -34,12 +33,12 @@ function clamp(val, min, max) {
 
 
 
-function helper(xPx, yPx, view, zoom, viewPxW, viewPxH) {
-  const vx = xPx / viewPxW;          
-  const vy = yPx / viewPxH;
+// New zoom model: zoom=N means each board pixel = N canvas pixels.
+// At zoom=1, canvas pixels map 1:1 to board pixels (no BOARD_W dependency).
+function helper(xPx, yPx, view, zoom) {
   return {
-    bx : Math.floor(view.x + vx * BOARD_W / zoom),
-    by : Math.floor(view.y + vy * BOARD_H / zoom)
+    bx : Math.floor(view.x + xPx / zoom),
+    by : Math.floor(view.y + yPx / zoom)
   };
 }
 
@@ -49,8 +48,9 @@ function helper(xPx, yPx, view, zoom, viewPxW, viewPxH) {
 
 export default function PolyPlace({ token, logout, openAuth })
 {
-  const viewCanvas = useRef(null);       
-  const boardCanvas = useRef(null);       
+  const viewCanvas = useRef(null);
+  const boardCanvas = useRef(null);
+  const canvasPanelRef = useRef(null);
   const wsRef = useRef(null);
 
   const [camera, setCamera] = useState({ x:0, y:0, zoom:1 });  
@@ -118,51 +118,60 @@ export default function PolyPlace({ token, logout, openAuth })
 
 
 
-  const redraw = useCallback(() => 
+  const redraw = useCallback(() =>
   {
     const vCtx = viewCanvas.current.getContext("2d");
+    const cw = vCtx.canvas.width;
+    const ch = vCtx.canvas.height;
+    const z = camera.zoom;
 
     vCtx.imageSmoothingEnabled = false;
 
-    const vw = BOARD_W / camera.zoom;
-    const vh = BOARD_H / camera.zoom;
-    vCtx.clearRect(0,0, vCtx.canvas.width, vCtx.canvas.height);
-    vCtx.drawImage(boardCanvas.current,
-      camera.x, camera.y, vw, vh,
-      0, 0, vCtx.canvas.width, vCtx.canvas.height
-    );
+    // Infinite canvas background
+    vCtx.fillStyle = '#666';
+    vCtx.fillRect(0, 0, cw, ch);
+
+    // Apply camera transform:
+    //   board (bx, by) → canvas ((bx - camera.x)*z, (by - camera.y)*z)
+    vCtx.save();
+    vCtx.translate(-camera.x * z, -camera.y * z);
+    vCtx.scale(z, z);
+
+    // White board background (unset pixels appear white, not gray)
+    vCtx.fillStyle = '#fff';
+    vCtx.fillRect(0, 0, BOARD_W, BOARD_H);
+
+    // Draw board pixels
+    vCtx.drawImage(boardCanvas.current, 0, 0);
+
+    // Board border — 1 canvas pixel wide at any zoom
+    vCtx.strokeStyle = '#000';
+    vCtx.lineWidth = 1 / z;
+    vCtx.strokeRect(0, 0, BOARD_W, BOARD_H);
+
+    vCtx.restore();
   }, [camera]);
 
 
 
   useEffect(() => {
+    const node = viewCanvas.current;
+    const panel = canvasPanelRef.current;
 
-    function fit() {
-      const node = viewCanvas.current;
-
-
-      const maxW = window.innerWidth;
-      const maxH = window.innerHeight;
-
-      const w = Math.floor(Math.min(maxW, maxH * BOARD_W / BOARD_H));
-      const h = Math.floor(w * BOARD_H / BOARD_W);
-      // const size = Math.floor(Math.min(w, h*16/9));
-
-
-
-      // node.width  = size;
-      // node.height = Math.floor(size * 9/16);
-      node.width  = w;
-      node.height = h;
-
+    function fitDisplay() {
+      const w = panel.clientWidth;
+      const h = panel.clientHeight;
+      // intrinsic resolution = display size: 1 canvas pixel = 1 screen pixel, no CSS scaling
+      node.width        = w;
+      node.height       = h;
       node.style.width  = `${w}px`;
       node.style.height = `${h}px`;
     }
-
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, [redraw]);
+    fitDisplay();
+    const ro = new ResizeObserver(fitDisplay);
+    ro.observe(panel);
+    return () => ro.disconnect();
+  }, []);
 
 
 
@@ -196,28 +205,27 @@ export default function PolyPlace({ token, logout, openAuth })
     //   camera, camera.zoom, rect.width, rect.height
     // );
 
-    const vx = (e.clientX - rect.left) / rect.width;
-    const vy = (e.clientY - rect.top) / rect.height;
-    
+    const cw = rect.width;
+    const ch = rect.height;
+    const vx = (e.clientX - rect.left) / cw;
+    const vy = (e.clientY - rect.top)  / ch;
 
-    const bx = camera.x + vx * BOARD_W / camera.zoom;
-    const by = camera.y + vy * BOARD_H / camera.zoom;
+    // board position under cursor
+    const bx = camera.x + vx * cw / camera.zoom;
+    const by = camera.y + vy * ch / camera.zoom;
 
     const newZoom = clamp(
       camera.zoom * (e.deltaY > 0 ? 0.9 : 1.1),
       MIN_ZOOM, MAX_ZOOM
     );
 
-
-    const vw = BOARD_W / newZoom;
-    const vh = BOARD_H / newZoom;
+    const vw = cw / newZoom;
+    const vh = ch / newZoom;
 
     const newCam = {
       zoom : newZoom,
-      // x : clamp(bx - vw * 0.5, 0, BOARD_W - vw),
-      // y : clamp(by - vh * 0.5, 0, BOARD_H - vh)
-      x : clamp(bx - vw * vx, 0, BOARD_W - vw),  
-      y : clamp(by - vh * vy, 0, BOARD_H - vh)
+      x : clamp(bx - vw * vx, -vw / 2, BOARD_W - vw / 2),
+      y : clamp(by - vh * vy, -vh / 2, BOARD_H - vh / 2)
     };
     setCamera(newCam);
   };
@@ -254,18 +262,19 @@ export default function PolyPlace({ token, logout, openAuth })
       y: e.clientY
     };
 
-    const rect = viewCanvas.current;
-    const vwPx = rect.width, vhPx = rect.height;
+    const cw = viewCanvas.current.width;
+    const ch = viewCanvas.current.height;
+    const vw = cw / camera.zoom;
+    const vh = ch / camera.zoom;
 
-    const speed = (MAX_ZOOM / camera.zoom) * PAN_SPEED; 
-
-    const nx = camera.x - dx * BOARD_W / (camera.zoom*vwPx) * speed/100;
-    const ny = camera.y - dy * BOARD_H / (camera.zoom*vhPx) * speed/100;
+    // 1 canvas pixel dragged = 1/zoom board pixels panned
+    const nx = camera.x - dx / camera.zoom;
+    const ny = camera.y - dy / camera.zoom;
 
     const newCam = {
       ...camera,
-      x : clamp(nx, 0, BOARD_W - BOARD_W/camera.zoom),
-      y : clamp(ny, 0, BOARD_H - BOARD_H/camera.zoom)
+      x : clamp(nx, -vw / 2, BOARD_W - vw / 2),
+      y : clamp(ny, -vh / 2, BOARD_H - vh / 2)
     };
     setCamera(newCam);
   };
@@ -284,7 +293,7 @@ export default function PolyPlace({ token, logout, openAuth })
 
     const rect = viewCanvas.current.getBoundingClientRect();
 
-    const { bx, by } = helper(e.clientX - rect.left, e.clientY - rect.top, camera, camera.zoom, rect.width, rect.height);
+    const { bx, by } = helper(e.clientX - rect.left, e.clientY - rect.top, camera, camera.zoom);
 
 
     if (bx < 0 || bx >= BOARD_W || by < 0 || by >= BOARD_H) return;
@@ -302,7 +311,7 @@ export default function PolyPlace({ token, logout, openAuth })
     const rect = viewCanvas.current.getBoundingClientRect();
     const { bx, by } = helper(
       e.clientX - rect.left, e.clientY - rect.top,
-      camera, camera.zoom, rect.width, rect.height
+      camera, camera.zoom
     );
     setCoords(`(${bx},${by})`);
   };
@@ -324,26 +333,27 @@ export default function PolyPlace({ token, logout, openAuth })
 
       <div className="main-content">
 
-        <canvas
-          ref={viewCanvas}
-          className="canvas"
-          onWheel={handleWheel}
-          onMouseDown={startDrag}
-          onMouseMove={e=>{moveDrag(e); hover(e);}}
-          onMouseUp={endDrag}
-          onMouseLeave={endDrag}
-          onClick={place}
-        />
+        <div className="canvas-panel" ref={canvasPanelRef}>
+          <canvas
+            ref={viewCanvas}
+            className="canvas"
+            onWheel={handleWheel}
+            onMouseDown={startDrag}
+            onMouseMove={e=>{moveDrag(e); hover(e);}}
+            onMouseUp={endDrag}
+            onMouseLeave={endDrag}
+            onClick={place}
+          />
 
-        <div className="sidebar">
-          <div className="coordinates">Coords: {coords}</div>
-          <div className="palette">
+          <div className="coords-overlay">{coords}</div>
+
+          <div className="color-overlay">
             {COLORS.map(c=>(
               <button key={c}
-                  className="color-button"
-                  style={{backgroundColor:c,
-                          border:c===colour?"2px solid #000":"1px solid #ccc"}}
-                  onClick={()=>setColour(c)}/>
+                className="color-button"
+                style={{backgroundColor:c,
+                        outline:c===colour?"3px solid #000":"none"}}
+                onClick={()=>setColour(c)}/>
             ))}
           </div>
         </div>

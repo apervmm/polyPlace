@@ -9,7 +9,7 @@ function Auth({ setToken }) {
 
 
   // const AUTH_BASE_URL = "https://poly-place-client-i6hu.vercel.app";
-  const AUTH_BASE_URL = "https://localhost:3000";
+  const AUTH_BASE_URL = "http://localhost:3000";
 
 
   async function handleRegister(e) {

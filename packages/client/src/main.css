@@ -38,27 +38,22 @@ body {
 
 .main-content {
   display: flex;
-  flex: 1; 
+  flex: 1;
+  overflow: hidden;
 }
 
-.canvas-container {
-  flex: 1; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.canvas-panel {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #666;
 }
-
-
 
 .canvas {
   display: block;
-  /* grid-template-columns: repeat(100, 1fr);
-  grid-template-rows: repeat(100, 1fr); */
-  /* width: 90%;
-  height: auto; */
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  /* border: 1px solid black; */
+  cursor: crosshair;
 }
 
 
@@ -70,42 +65,44 @@ body {
 
 
 
-.sidebar {
-  width: 140px; 
-  background-color: #fff;
-  border-left: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-}
-
-
-
-.coordinates {
-  margin-bottom: 10px;
-  font-size: 16px;
+.coords-overlay {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.88);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: bold;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
 
-
-
-.palette {
-  display: grid;
-  grid-template-columns: repeat(2, 40px);
-  grid-gap: 5px;
+.color-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  background: rgba(255,255,255,0.92);
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-
 
 .color-button {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 1px solid #ccc;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .color-button:hover {
-  border: 2px solid black;
+  outline: 3px solid #000;
 }
 
 
