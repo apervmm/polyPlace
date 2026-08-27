@@ -8,3 +8,4 @@ test.js
 test2.py
 .DS_Store
 /bots
+/websocket
