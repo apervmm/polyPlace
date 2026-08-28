@@ -46,6 +46,17 @@ wheels = [
 ]
 
 [[package]]
+name = "backend"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "fastapi", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [{ name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" }]
+
+[[package]]
 name = "certifi"
 version = "2026.7.22"
 source = { registry = "https://pypi.org/simple" }
@@ -714,17 +725,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/9a/e7/c504a4bd2d95df2e0
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2b/28/465ad9382be98f2172e691f5836cf87f936773913ad7ab85ba1ba1d6706e/sentry_sdk-2.68.1-py3-none-any.whl", hash = "sha256:775b78871783a0ffd758276ad01b3bb2b1ebcdad8f9d2f0a7723f76b73c99b65", size = 520851, upload-time = "2026-08-24T13:09:36.186Z" },
 ]
-
-[[package]]
-name = "server-fastapi"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "fastapi", extra = ["standard"] },
-]
-
-[package.metadata]
-requires-dist = [{ name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" }]
 
 [[package]]
 name = "shellingham"
