@@ -5,4 +5,6 @@ requires-python = ">=3.13"
 dependencies = [
     "asyncpg>=0.31.0",
     "fastapi[standard]>=0.141.1",
+    "pwdlib[argon2]>=0.3.1",
+    "pyjwt>=2.13.0",
 ]

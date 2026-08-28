@@ -2,15 +2,18 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.database import connect_db, disconnect_db
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await connect_db()
+    yield
+    await disconnect_db()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/items/{item_id}")
-async def root(item_id: int):
-    return {"item_id": item_id}
+@app.get("/health")
+async def health():
+    return {"status": "OK"}
