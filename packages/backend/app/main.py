@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from app.database import connect_db, disconnect_db
 
 app = FastAPI()
+
 
 
 @app.get("/")
