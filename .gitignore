@@ -9,3 +9,5 @@ test2.py
 .DS_Store
 /bots
 /websocket
+__pycache__
+/__pycache__
