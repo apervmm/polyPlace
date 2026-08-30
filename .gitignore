@@ -11,3 +11,4 @@ test2.py
 /websocket
 __pycache__
 /__pycache__
+.pytest_cache
