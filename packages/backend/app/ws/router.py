@@ -28,6 +28,6 @@ async def websocket_endpoint(websocket: WebSocket):
             while True:
                 data = await websocket.receive_json()
                 if data.get("type") == "place":
-                    await handle_place(session, data, user_id)
+                    await handle_place(session, data, user_id, websocket)
         except WebSocketDisconnect:
             manager.disconnect(websocket)

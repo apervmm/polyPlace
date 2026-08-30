@@ -4,11 +4,20 @@ from app.core.config import get_settings
 from app.schemas.pixel import PlaceMessage
 from app.services.board_service import place_pixel
 from app.ws.connection_manager import manager
+from fastapi import WebSocket
 
 settings = get_settings()
 
 
-async def handle_place(session: AsyncSession, data: dict, user_id: str | None) -> None:
+
+async def handle_place(session: AsyncSession, data: dict, user_id: str | None, websocket: WebSocket) -> None:
+    if user_id is None:
+        await websocket.send_json({
+            "type": "error",
+            "message": "You must be logged in to place a pixel",
+        })
+        return
+    
     msg = PlaceMessage(**data)
 
     if not (0 <= msg.x < settings.board_width and 0 <= msg.y < settings.board_height):
