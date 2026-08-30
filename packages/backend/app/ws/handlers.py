@@ -5,6 +5,7 @@ from app.schemas.pixel import PlaceMessage
 from app.services.board_service import place_pixel
 from app.ws.connection_manager import manager
 from fastapi import WebSocket
+from pydantic import ValidationError
 
 settings = get_settings()
 
@@ -18,7 +19,14 @@ async def handle_place(session: AsyncSession, data: dict, user_id: str | None, w
         })
         return
     
-    msg = PlaceMessage(**data)
+
+    # msg = PlaceMessage(**data)
+
+    try:
+        msg = PlaceMessage(**data)
+    except ValidationError:
+        await websocket.send_json({"type": "error", "message": "Invalid pixel data"})
+        return
 
     if not (0 <= msg.x < settings.board_width and 0 <= msg.y < settings.board_height):
         return  # dropping out-of-bound placements
