@@ -33,7 +33,7 @@ async def handle_place(session: AsyncSession, data: dict, user_id: str | None, w
 
     pixel = await place_pixel(session, msg.x, msg.y, msg.color, user_id)
 
-    await manager.broadcast({
+    await manager.publish({
         "type": "update",
         "x": pixel.x,
         "y": pixel.y,

@@ -4,10 +4,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.ws.router import router as ws_router
+from app.ws.connection_manager import manager
+
+from contextlib import asynccontextmanager
 
 settings = get_settings()
 
-app = FastAPI(title="PolyPlace API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await manager.start_listener()
+    yield
+    await manager.stop_listener()
+
+app = FastAPI(title="PolyPlace API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
