@@ -24,7 +24,8 @@ function hexToRgb(hex) {
 
 
 // const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
-const ADDR = "ws://localhost:8765";
+// const ADDR = "ws://localhost:8765";
+const ADDR = "ws://localhost:8000/ws";
 
 
 function clamp(val, min, max) { 
@@ -52,6 +53,7 @@ export default function PolyPlace({ token, logout, openAuth })
   const boardCanvas = useRef(null);
   const canvasPanelRef = useRef(null);
   const wsRef = useRef(null);
+  const paintRef = useRef(null);
 
   const [camera, setCamera] = useState({ x:0, y:0, zoom:1 });  
   const [coords, setCoords] = useState("(0,0)");
@@ -71,7 +73,20 @@ export default function PolyPlace({ token, logout, openAuth })
     oCtx.putImageData(img, 0, 0);
     boardCanvas.current = off;
 
-    const ws = new WebSocket(token ? `${ADDR}/?token=${token}` : ADDR);
+    const ws = new WebSocket(token ? `${ADDR}?token=${token}` : ADDR);
+
+    const paint = (idx, col) => {
+      const [r,g,b] = hexToRgb(col);
+      img.data[idx+0]=r; 
+      img.data[idx+1]=g; 
+      img.data[idx+2]=b; 
+      img.data[idx+3]=255;
+    };
+
+    paintRef.current = (x, y, col) => {
+      paint((y * BOARD_W + x) * 4, col);
+      oCtx.putImageData(img, 0, 0);
+    };
 
     wsRef.current = ws;
 
@@ -85,15 +100,13 @@ export default function PolyPlace({ token, logout, openAuth })
         return; 
       }
 
-
-
-      const paint = (idx, col) => {
-        const [r,g,b] = hexToRgb(col);
-        img.data[idx+0]=r; 
-        img.data[idx+1]=g; 
-        img.data[idx+2]=b; 
-        img.data[idx+3]=255;
-      };
+      // const paint = (idx, col) => {
+      //   const [r,g,b] = hexToRgb(col);
+      //   img.data[idx+0]=r; 
+      //   img.data[idx+1]=g; 
+      //   img.data[idx+2]=b; 
+      //   img.data[idx+3]=255;
+      // };
 
       if (msg.type === "init") {
         msg.pixels.forEach(({x, y, color}) => paint((y * BOARD_W + x) * 4, color));
@@ -297,6 +310,8 @@ export default function PolyPlace({ token, logout, openAuth })
 
 
     if (bx < 0 || bx >= BOARD_W || by < 0 || by >= BOARD_H) return;
+
+    paintRef.current(bx, by, colour);
 
     wsRef.current.send(JSON.stringify({
       type:"place", 
