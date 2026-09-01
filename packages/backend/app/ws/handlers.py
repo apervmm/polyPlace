@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.core.rate_limit import is_rate_limited
 from app.schemas.pixel import PlaceMessage
 from app.services.board_service import place_pixel
 from app.ws.connection_manager import manager
@@ -16,6 +17,15 @@ async def handle_place(session: AsyncSession, data: dict, user_id: str | None, w
         await websocket.send_json({
             "type": "error",
             "message": "You must be logged in to place a pixel",
+        })
+        return
+
+    print(f"handle_place called with user_id={user_id}")
+
+    if await is_rate_limited(user_id):
+        await websocket.send_json({
+            "type": "error",
+            "message": "Chill Bro"
         })
         return
     

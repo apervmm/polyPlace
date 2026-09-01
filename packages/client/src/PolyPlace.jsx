@@ -92,12 +92,11 @@ export default function PolyPlace({ token, logout, openAuth })
 
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
-      if (msg.error) { 
-        if (token) {
-          ws.close(); 
-          logout(); 
-        }
-        return; 
+      
+      if (msg.type === "error") {
+        console.warn("Server error:", msg.message);
+        // alert(msg.message);
+        return;
       }
 
       // const paint = (idx, col) => {
@@ -311,7 +310,7 @@ export default function PolyPlace({ token, logout, openAuth })
 
     if (bx < 0 || bx >= BOARD_W || by < 0 || by >= BOARD_H) return;
 
-    paintRef.current(bx, by, colour);
+    // paintRef.current(bx, by, colour);
 
     wsRef.current.send(JSON.stringify({
       type:"place", 

@@ -16,18 +16,26 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await manager.connect(websocket)
 
-    async with AsyncSessionLocal() as session:
-        pixels = await get_board_state(session)
-        await websocket.send_json({
-            "type": "init",
-            "pixels": [p.model_dump() for p in pixels],
-            "userId": user_id,
-        })
+    try:
+        async with AsyncSessionLocal() as session:
+            pixels = await get_board_state(session)
+            await websocket.send_json({
+                "type": "init",
+                "pixels": [p.model_dump() for p in pixels],
+                "userId": user_id,
+            })
 
-        try:
             while True:
                 data = await websocket.receive_json()
                 if data.get("type") == "place":
-                    await handle_place(session, data, user_id, websocket)
-        except WebSocketDisconnect:
-            manager.disconnect(websocket)
+                    async with AsyncSessionLocal() as session:
+                        await handle_place(session, data, user_id, websocket)
+
+
+    except WebSocketDisconnect:
+        # manager.disconnect(websocket)
+        pass
+    except Exception as e:
+        print(f"WS error for user {user_id}: {e}")
+    finally:
+        manager.disconnect(websocket)
