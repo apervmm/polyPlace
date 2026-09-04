@@ -59,3 +59,4 @@ class RateLimiter:
 
 placement_user_limiter = RateLimiter(name="placement_user", window_seconds=5)
 placement_ip_limiter = RateLimiter(name="placement_ip", window_seconds=3)
+register_ip_limiter = RateLimiter(name="register_ip", window_seconds=60)
