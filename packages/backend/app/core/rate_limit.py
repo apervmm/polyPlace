@@ -48,6 +48,14 @@ class RateLimiter:
         )
         return was_set is None
     
+    async def get_ttl(self, identifier: str) -> int:
+        """
+            Seconds remaining until this identifier is no longer rate-limited
+            0, if not limited
+        """
+        ttl = await redis_client.ttl(self._key(identifier))
+        return max(ttl, 0)
+    
 
 placement_user_limiter = RateLimiter(name="placement_user", window_seconds=5)
 placement_ip_limiter = RateLimiter(name="placement_ip", window_seconds=3)
