@@ -18,10 +18,12 @@ async def _check_cooldown(key: str, ttl_seconds: int) -> bool:
 
 
 async def is_user_rate_limited(user_id: str) -> bool:
-    key = f"polyplace:cooldown:{user_id}"
+    key = f"polyplace:cooldown:user:{user_id}"
     return await _check_cooldown(key, USER_COOLDOWN_SEC)
 
 
 async def is_ip_rate_limited(ip: str) -> bool:
-    key = f"polyplace:cooldown:{ip}"
+    if not ip:
+        return False
+    key = f"polyplace:cooldown:ip:{ip}"
     return await _check_cooldown(ip, IP_COOLDOWN_SEC)

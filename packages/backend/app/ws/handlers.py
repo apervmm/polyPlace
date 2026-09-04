@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
-from app.core.rate_limit import is_rate_limited, is_ip_rate_limited
+from app.core.rate_limit import is_user_rate_limited, is_ip_rate_limited
 from app.schemas.pixel import PlaceMessage
 from app.services.board_service import place_pixel
 from app.ws.connection_manager import manager
