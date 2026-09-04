@@ -1,4 +1,5 @@
 from app.core.redis import redis_client
+from dataclasses import dataclass
 
 
 USER_COOLDOWN_SEC = 5
@@ -27,3 +28,26 @@ async def is_ip_rate_limited(ip: str) -> bool:
         return False
     key = f"polyplace:cooldown:ip:{ip}"
     return await _check_cooldown(ip, IP_COOLDOWN_SEC)
+
+
+
+@dataclass
+class RateLimiter:
+    """A reusable, named rate limitter"""
+    name: str             
+    window_seconds: int   
+
+
+    def _key(self, identifier: str) -> str:
+        return f"polyplace:ratelimit:{self.name}:{identifier}"
+
+    async def is_limited(self, identifier: str) -> bool:
+        """identifier = Whatever you are limiting by"""
+        was_set = await redis_client.set(
+            self._key(identifier), "1", nx=True, ex=self.window_seconds
+        )
+        return was_set is None
+    
+
+placement_user_limiter = RateLimiter(name="placement_user", window_seconds=5)
+placement_ip_limiter = RateLimiter(name="placement_ip", window_seconds=3)

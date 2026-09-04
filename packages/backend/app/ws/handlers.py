@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
-from app.core.rate_limit import is_user_rate_limited, is_ip_rate_limited
+from app.core.rate_limit import is_user_rate_limited, is_ip_rate_limited, placement_user_limiter, placement_ip_limiter
 from app.schemas.pixel import PlaceMessage
 from app.services.board_service import place_pixel
 from app.ws.connection_manager import manager
@@ -22,14 +22,14 @@ async def handle_place(session: AsyncSession, data: dict, user_id: str | None, c
 
     print(f"handle_place called with user_id={user_id}")
 
-    if await is_ip_rate_limited(client_ip):
+    if await placement_ip_limiter.is_limited(client_ip):
         await websocket.send_json({
             "type": "error",
             "message": "Chill Your IP Bro",
         })
         return
 
-    if await is_rate_limited(user_id):
+    if await placement_user_limiter.is_limited(user_id):
         await websocket.send_json({
             "type": "error",
             "message": "Chill Your User Bro"
