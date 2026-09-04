@@ -13,6 +13,7 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket):
     token = websocket.query_params.get("token")
     user_id = decode_access_token(token) if token else None
+    client_ip = websocket.client.host if websocket.client else None
 
     await manager.connect(websocket)
 
@@ -29,7 +30,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 data = await websocket.receive_json()
                 if data.get("type") == "place":
                     async with AsyncSessionLocal() as session:
-                        await handle_place(session, data, user_id, websocket)
+                        await handle_place(session, data, user_id, client_ip, websocket)
 
 
     except WebSocketDisconnect:
