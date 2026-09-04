@@ -161,4 +161,4 @@ Opens at http://localhost:5173.
 
 ## Contributing
  
-Contributions are welcome — bug fixes, tests, docs, and performance work especially.
+Contributions are welcome — bug fixes, tests, docs, features, and performance work especially.
