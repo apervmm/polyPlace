@@ -23,16 +23,18 @@ async def handle_place(session: AsyncSession, data: dict, user_id: str | None, c
     print(f"handle_place called with user_id={user_id}")
 
     if await placement_ip_limiter.is_limited(client_ip):
+        remaining = await placement_ip_limiter.get_ttl(client_ip)
         await websocket.send_json({
             "type": "error",
-            "message": "Chill Your IP Bro",
+            "message": f"Placing too fast — wait {remaining}s",
         })
         return
 
     if await placement_user_limiter.is_limited(user_id):
+        remaining = await placement_user_limiter.get_ttl(user_id)
         await websocket.send_json({
             "type": "error",
-            "message": "Chill Your User Bro"
+            "message": f"Placing too fast — wait {remaining}s",
         })
         return
     
