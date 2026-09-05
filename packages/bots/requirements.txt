@@ -1,4 +1,0 @@
-websockets
-Pillow
-requests
-python-dotenv

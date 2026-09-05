@@ -1,4 +1,4 @@
-# poly/Place is a real-time and multiplayer game inspired by r/Place.
+# poly/Place
 
 A real-time, multiplayer pixel canvas inspired by r/place. Users claim pixels on a shared 540×540 board and every placement is broadcasted live to everyone connected.
 
