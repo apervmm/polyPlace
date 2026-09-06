@@ -2,13 +2,21 @@ services:
   api:
     build: .
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/polyplace
+      REDIS_URL: redis://redis:6379/0
+      DB_SSL: "false"
     ports:
       - "8000:8000"
     volumes:
       - ./app:/app/app   
-    command: uv run fastapi dev --host 0.0.0.0 --port 8000
+    # command: uv run fastapi dev --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
   # api2:
   #   build: .
   #   env_file: .env
@@ -27,3 +35,20 @@ services:
     image: redis/redisinsight
     ports:
       - 5540:5540
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: polyplace
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+      
+volumes:
+  pgdata:

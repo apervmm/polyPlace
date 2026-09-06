@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 
 
 class Settings(BaseSettings):
@@ -13,6 +14,15 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
+
+    @field_validator("database_url")
+    @classmethod
+    def _use_async_driver(cls, v: str) -> str:
+        """Railway and Heroku-style URLs use the bare postgres scheme."""
+        for prefix in ("postgresql://", "postgres://"):
+            if v.startswith(prefix):
+                return "postgresql+asyncpg://" + v[len(prefix):]
+        return v
 
     @property
     def cors_origin_list(self) -> list[str]:

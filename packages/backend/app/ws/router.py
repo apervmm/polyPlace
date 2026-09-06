@@ -5,6 +5,7 @@ from app.db.session import AsyncSessionLocal
 from app.services.board_service import get_board_state
 from app.ws.connection_manager import manager
 from app.ws.handlers import handle_place
+from app.core.tools import get_client_ip
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket):
     token = websocket.query_params.get("token")
     user_id = decode_access_token(token) if token else None
-    client_ip = websocket.client.host if websocket.client else None
+    client_ip = get_client_ip(websocket)
 
     await manager.connect(websocket)
 
