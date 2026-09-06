@@ -30,9 +30,28 @@ load_dotenv()
 # Build a sync URL for Alembic from the same DATABASE_URL your app uses,
 # just swapping the async driver for a sync one.
 # db_url = os.environ["DATABASE_URL"].replace("postgresql+asyncpg://", "postgresql+psycopg2://")
-db_url = os.environ["DATABASE_URL"].replace("postgresql+asyncpg://", "postgresql+psycopg://")
-if "sslmode" not in db_url:
+# db_url = os.environ["DATABASE_URL"].replace("postgresql+asyncpg://", "postgresql+psycopg://")
+# if "sslmode" not in db_url:
+#     db_url += "?sslmode=require"
+# config.set_main_option("sqlalchemy.url", db_url)
+
+
+
+db_url = os.environ.get("DATABASE_URL", "")
+if "://" not in db_url:
+    raise RuntimeError(
+        f"DATABASE_URL is not a valid URL (got: {db_url!r}). "
+        "Check the Railway variable reference resolves."
+    )
+
+for prefix in ("postgresql+asyncpg://", "postgresql://", "postgres://"):
+    if db_url.startswith(prefix):
+        db_url = "postgresql+psycopg://" + db_url[len(prefix):]
+        break
+
+if os.getenv("DB_SSL", "false").lower() == "true" and "sslmode" not in db_url:
     db_url += "?sslmode=require"
+
 config.set_main_option("sqlalchemy.url", db_url)
 
 

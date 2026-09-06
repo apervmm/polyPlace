@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     board_height: int = 540
     cors_origins: str = "http://localhost:5173"
     redis_url: str = "redis://localhost:6379/0"
+    db_ssl: bool = False
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
 
