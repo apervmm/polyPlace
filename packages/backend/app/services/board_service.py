@@ -9,6 +9,10 @@ from app.core.redis import redis_client
 BOARD_CACHE_KEY = "polyplace:board"
 
 
+# TODO: Implement TTL
+BOARD_TTL = 3600
+
+
 async def get_board_state(session: AsyncSession) -> list[PixelOut]:
     cached = await redis_client.get(BOARD_CACHE_KEY)
 
