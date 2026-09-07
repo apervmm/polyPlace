@@ -1,3 +1,7 @@
+```
+Note: This project is used to challenge myself in System Design, but I'll be happy to contribute and am open to learning other patterns for designing distributed systems.
+```
+
 # poly/Place
 
 A real-time, multiplayer pixel canvas inspired by r/place. Users claim pixels on a shared 540×540 board and every placement is broadcasted live to everyone connected.
