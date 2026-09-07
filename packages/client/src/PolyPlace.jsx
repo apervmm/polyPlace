@@ -4,6 +4,8 @@ import React, {
   useRef, 
   useCallback
 } from "react";
+import { config } from "./config";
+
 
 
 const BOARD_W  = 540;
@@ -25,7 +27,7 @@ function hexToRgb(hex) {
 
 // const ADDR = "wss://wwserver-hye8emhqc7cfcgef.westus3-01.azurewebsites.net";
 // const ADDR = "ws://localhost:8765";
-const ADDR = "ws://localhost:8000/ws";
+// const ADDR = "ws://localhost:8000/ws";
 
 
 function clamp(val, min, max) { 
@@ -73,7 +75,7 @@ export default function PolyPlace({ token, logout, openAuth })
     oCtx.putImageData(img, 0, 0);
     boardCanvas.current = off;
 
-    const ws = new WebSocket(token ? `${ADDR}?token=${token}` : ADDR);
+    const ws = new WebSocket(token ? `${config.wsUrl}?token=${token}` : config.wsUrl);
 
     const paint = (idx, col) => {
       const [r,g,b] = hexToRgb(col);
@@ -95,7 +97,10 @@ export default function PolyPlace({ token, logout, openAuth })
       
       if (msg.type === "error") {
         console.warn("Server error:", msg.message);
-        // alert(msg.message);
+        if (msg.message.includes("logged in")) {
+          logout();
+          openAuth();
+        }
         return;
       }
 
@@ -119,10 +124,16 @@ export default function PolyPlace({ token, logout, openAuth })
       }
     };
 
-    ws.onerror = () => {
-      ws.close(); 
-      logout(); 
+    // ws.onerror = () => {
+    //   ws.close(); 
+    //   logout(); 
+    // };
+
+    ws.onerror = (e) => {
+      console.error("WebSocket error:", e);
     };
+
+    
     return () => ws.close();
   }, [token, logout]);
 

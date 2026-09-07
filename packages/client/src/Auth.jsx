@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { config } from "./config";
 
 function Auth({ setToken }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -10,13 +11,12 @@ function Auth({ setToken }) {
 
   // const AUTH_BASE_URL = "https://poly-place-client-i6hu.vercel.app";
   // const AUTH_BASE_URL = "http://localhost:8000";
-  const AUTH_BASE_URL = "http://localhost:8000/api/v1/auth";
 
 
   async function handleRegister(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${AUTH_BASE_URL}/register`, {
+      const res = await fetch(`${config.authBase}/api/v1/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, email }),
@@ -35,7 +35,7 @@ function Auth({ setToken }) {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${AUTH_BASE_URL}/login`, {
+      const res = await fetch(`${config.authBase}/api/v1/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
