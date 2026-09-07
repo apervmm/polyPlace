@@ -1,5 +1,5 @@
 ```
-Note: This project is used to challenge myself in System Design, but I'll be happy to contribute and am open to learning other patterns for designing distributed systems.
+Note: This project is to challenge myself in System Design, but I'm happy to see contributions and learn from others' different patterns for designing a well-thought-out distributed system.
 ```
 
 # poly/Place
