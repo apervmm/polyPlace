@@ -16,7 +16,7 @@ function Auth({ setToken }) {
   async function handleRegister(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${config.authBase}/api/v1/register`, {
+      const res = await fetch(`${config.authBase}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, email }),
@@ -35,7 +35,7 @@ function Auth({ setToken }) {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${config.authBase}/api/v1/login`, {
+      const res = await fetch(`${config.authBase}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

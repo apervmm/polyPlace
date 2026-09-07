@@ -6,6 +6,6 @@ if (!API_BASE) {
 
 export const config = {
   apiBase: API_BASE,
-  authBase: `${API_BASE}/api/v1/auth`,
+  authBase: `${API_BASE}/api/v1`,
   wsUrl: `${API_BASE.replace(/^http/, "ws")}/ws`,
 };
