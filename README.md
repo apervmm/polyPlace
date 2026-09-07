@@ -2,7 +2,7 @@
 
 A real-time, multiplayer pixel canvas inspired by r/place. Users claim pixels on a shared 540×540 board and every placement is broadcasted live to everyone connected.
 
-***Prod:*** https://pplace.vercel.app/ 
+***Prod:*** [polyplace.art](https://www.polyplace.art/)
 
 
 ## Stack
