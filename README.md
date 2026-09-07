@@ -30,6 +30,9 @@ The backend was consolidated into a **single FastAPI service** that handles both
 4. `place_pixel` upserts into `pixels` (unique on `x,y`), appends an immutable row to `actions`, and patches the single pixel inside the cached board.
 5. The update is **published to Redis**, not broadcast directly. Every API instance subscribes to `polyplace:updates` and re-broadcasts to its own local sockets.
 
+<img width="711" height="658" alt="image" src="https://github.com/user-attachments/assets/6d5219c6-791b-4393-8c8c-d2173418eafd" />
+
+
 
 ### Caching
  
