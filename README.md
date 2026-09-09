@@ -4,7 +4,7 @@ Note: I created this project to challenge myself in System Design, but I'm happy
 
 # poly/Place
 
-A real-time, multiplayer pixel canvas inspired by r/place. Users claim pixels on a shared 540×540 board and every placement is broadcasted live to everyone connected.
+A real-time, multiplayer pixel canvas game inspired by r/place
 
 ***Prod:*** [polyplace.art](https://www.polyplace.art/)
 
