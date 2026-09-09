@@ -8,6 +8,9 @@ test.js
 test2.py
 .DS_Store
 /bots
+bots
+/packages/bots
+/packages/bots/
 /websocket
 __pycache__
 /__pycache__

@@ -15,3 +15,8 @@ dependencies = [
     "python-jose>=3.5.0",
     "redis>=8.1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pillow>=12.3.0",
+]
