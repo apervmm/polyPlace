@@ -6,6 +6,9 @@ Note: I created this project to challenge myself in System Design, but I'm happy
 
 A real-time, multiplayer pixel canvas game inspired by r/place
 
+<img width="797" height="925" alt="image" src="https://github.com/user-attachments/assets/0d3fca96-0056-49b7-b360-2b33ff8d4569" />
+
+
 ***Prod:*** [polyplace.art](https://www.polyplace.art/)
 
 
